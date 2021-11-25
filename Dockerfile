@@ -11,7 +11,7 @@ RUN apk add --no-cache \
 
 RUN set -eux; \
 	apk add --update --no-cache --virtual .build-deps openssl go ; \
-	apk add --update --no-cache make bash gcc g++ libc-dev curl musl-dev util-linux-dev; \
+	apk add --update --no-cache make bash gcc g++ libc-dev git curl musl-dev util-linux-dev; \
 	export \
 # set GOROOT_BOOTSTRAP such that we can actually build Go
 		GOROOT_BOOTSTRAP="$(go env GOROOT)" \
