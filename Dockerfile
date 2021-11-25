@@ -10,8 +10,8 @@ RUN apk add --no-cache \
 		ca-certificates
 
 RUN set -eux; \
-	apk add --update --no-cache --virtual .build-deps openssl; \
-	apk add --update --no-cache make bash gcc g++ libc-dev go git curl musl-dev util-linux-dev; \
+	apk add --update --no-cache --virtual .build-deps openssl go ; \
+	apk add --update --no-cache make bash gcc g++ libc-dev curl musl-dev util-linux-dev; \
 	export \
 # set GOROOT_BOOTSTRAP such that we can actually build Go
 		GOROOT_BOOTSTRAP="$(go env GOROOT)" \
@@ -21,6 +21,7 @@ RUN set -eux; \
 		GOARCH="$(go env GOARCH)" \
 		GOHOSTOS="$(go env GOHOSTOS)" \
 		GOHOSTARCH="$(go env GOHOSTARCH)" \
+		CGO_ENABLED=0 \
 	; \
 	\
 	wget -O go.tgz "https://golang.org/dl/go$GOLANG_VERSION.src.tar.gz"; \
@@ -43,10 +44,10 @@ RUN set -eux; \
 	export PATH="/usr/local/go/bin:$PATH"; \
 	go version
 
-RUN curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.37.1
-
 ENV GOPATH /go
 ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
+
+RUN curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.37.1
 
 RUN mkdir -p "$GOPATH/src" "$GOPATH/bin" && chmod -R 777 "$GOPATH"
 WORKDIR $GOPATH
